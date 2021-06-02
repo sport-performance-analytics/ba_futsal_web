@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <link rel="stylesheet" href="style.css">
+  <title>BreakAway Futsal</title>
+</head>
+<body>
+  <div class="app-container">
+    <div class="grid-container">
+      <div class="pnl_time panel">
+        <div class="period">
+          <p>Period: 0</p>
+        </div>
+        <div class="pause">
+          <button>Pause</button>
+        </div>
+        <div class="break">
+          <button>Break</button>
+        </div>
+        <div class="kick_off">
+          <button>Kick Off</button>
+        </div>
+        <div class="clock_main">
+          <p>Time: 00:00</p>
+        </div>
+      </div>
+      <div class="pnl_actions panel">
+        <div class="undo">
+          <button>Undo</button>
+        </div>
+        <div class="pk1">
+          <button>PK1</button>
+        </div>
+        <div class="pk2">
+          <button>PK2</button>
+        </div>
+        <div class="stoppage">
+          <button>Stoppage</button>
+        </div>
+        <div class="clock_stop">
+          <p>Play Clock: 00:00</p>
+        </div>
+        <div class="pass_inc">
+          <button>Pass Inc.</button>
+        </div>
+        <div class="poss_loss">
+          <button>Poss. Loss</button>
+        </div>
+        <div class="seq_brk">
+          <button>Seq. Break</button>
+        </div>
+        <div class="kick_in">
+          <button>Kick In</button>
+        </div>
+        <div class="shot_on">
+          <button>Shot ON</button>
+        </div>
+        <div class="shot_off">
+          <button>Shot OFF</button>
+        </div>
+        <div class="f_kick">
+          <button>Free Kick</button>
+        </div>
+        <div class="c_kick">
+          <button>Corner Kick</button>
+        </div>
+      </div>
+      <div class="pnl_opp panel">
+        <div class="opp_son">
+          <button>Shot ON</button>
+          <p>0</p>
+        </div>
+        <div class="opp_soff">
+          <button>Shot OFF</button>
+          <p>0</p>
+        </div>
+        <div class="opp_pk1">
+          <button>PK1</button>
+          <p>0</p>
+        </div>
+        <div class="opp_pk2">
+          <button>PK2</button>
+          <p>0</p>
+        </div>
+        <div class="opp_ck">
+          <button>Corner Kick</button>
+          <p>0</p>
+        </div>
+        <div class="opp_fk">
+          <button>Free Kick</button>
+          <p>0</p>
+        </div>
+      </div>
+      <div class="pnl_match panel">
+        <div class="home">
+          <p>HOME TEAM</p>
+        </div>
+        <div class="away">
+          <p>AWAY TEAM</p>
+        </div>
+        <div class="goal_h">
+          <button>Home Goal</button>
+        </div>
+        <div class="goal_a">
+          <button>Away Goal</button>
+        </div>
+        <div class="score_h">
+          <p>0</p>
+        </div>
+        <div class="score_a">
+          <p>0</p>
+        </div>
+      </div>
+      <div class="pnl_team panel">
+        <div class="form">
+          <select>
+            <option value="1">1-2-1</option>
+            <option value="2">1-1-2</option>
+            <option value="3">1-0-3</option>
+            <option value="4">2-2</option>
+            <option value="4">2-1-1</option>
+            <option value="4">3-0-1</option>
+            <option value="4">4-0</option>
+            <option value="4">5-0</option>
+          </select>
+        </div>
+        <div class="bench">
+          <select size="5">
+            <option value="1">Item #1</option>
+            <option value="2">Item #2</option>
+            <option value="3">Item #3</option>
+            <option value="4">Item #4</option>
+            <option value="5">Item #5</option>
+            <option value="6">Item #6</option>
+            <option value="7">Item #7</option>
+            <option value="7">Item #8</option>
+            <option value="7">Item #9</option>
+            <option value="7">Item #10</option>
+          </select> 
+        </div>
+        <div class="switch">
+          <button>Switch</button>
+        </div>
+        <div class="sub">
+          <button>Sub</button>
+        </div>
+      </div>
+      <div class="pnl_field panel">
+        <div id="field_container">
+          <img src="futsal.png" alt="field background" class="background">
+          <div id="play1" class="player">
+              <button class="jersey" id="btn1">#1</button><br>
+              <input type="checkbox" id="chk1">
+              <label for="chk1">Player One</label>
+          </div>
+          <div id="play2" class="player">
+              <button class="jersey" id="btn2">#2</button><br>
+              <input type="checkbox" id="chk2">
+              <label for="chk2">Player Two</label>
+          </div>
+          <div id="play3" class="player">
+              <button class="jersey" id="btn3">#3</button><br>
+              <input type="checkbox" id="chk3">
+              <label for="chk3">Player Three</label>
+          </div>
+          <div id="play4" class="player">
+              <button class="jersey" id="btn4">#4</button><br>
+              <input type="checkbox" id="chk4">
+              <label for="chk4">Player Four</label>
+          </div>
+          <div id="play5" class="player">
+              <button class="jersey" id="btn5">#5</button><br>
+              <input type="checkbox" id="chk5">
+              <label for="chk5">Player Five</label>
+          </div>
+        </div>
+      </div>
+      <div class="pnl_seq panel">
+        <p>--</p>
+      </div>
+      <div class="pnl_stats panel">
+        <div class="p_att">
+          <p>Pass Attempts</p>
+          <p>0</p>
+        </div>
+        <div class="p_cmp">
+          <p>Pass Complete</p>
+          <p>0</p>
+        </div>
+        <div class="p_eff">
+          <p>Pass Eff. %</p>
+          <p>0</p>
+        </div>
+        <div class="s_on">
+          <p>Shot On</p>
+          <p>0</p>
+        </div>
+        <div class="s_off">
+          <p>Shot Off</p>
+          <p>0</p>
+        </div>
+        <div class="s_eff">
+          <p>Shot Eff. %</p>
+          <p>0</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

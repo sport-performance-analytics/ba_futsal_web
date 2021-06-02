@@ -1,0 +1,242 @@
+.app-container {
+  display: flex;
+  justify-content: center;
+}
+
+.grid-container {
+  display: grid;
+  grid-template-columns: 22vw 22vw 22vw 22vw;
+  grid-template-rows: 18vh 18vh 18vh 18vh 18vh;
+  gap: 0px 0px;
+  grid-template-areas:
+    "pnl_time pnl_actions pnl_actions pnl_opp"
+    "pnl_field pnl_field pnl_field pnl_match"
+    "pnl_field pnl_field pnl_field pnl_team"
+    "pnl_field pnl_field pnl_field pnl_seq"
+    "pnl_field pnl_field pnl_field pnl_stats";
+}
+
+.panel {
+  border: gray;
+  border-style: groove;
+}
+
+.background {
+  display: block;
+  margin: auto;
+  max-width:64vw;
+  max-height:70vh;
+  opacity: 0.8;
+}
+
+#field_container {
+    background-color: slategrey;
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%,-50%);
+    height: fit-content;
+    width: fit-content;
+    display: flex;
+    justify-content: center;
+}
+
+.player {
+  height:15%;
+  width: 10%;
+}
+
+.jersey {
+  height: 100%;
+  width: 100%;
+  background: url(jersey_fut_h.jpg);
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-color: lightslategray;
+  position: relative;
+}
+
+#play1 {
+  position: absolute;
+  top: 42.5%;
+  left: 10%;
+}
+
+#play2 {
+  position: absolute;
+  top: 42.5%;
+  left: 30%;
+}
+
+#play3 {
+  position: absolute;
+  top: 12.5%;
+  left: 50%;
+}
+
+#play4 {
+  position: absolute;
+  top: 68.5%;
+  left: 50%;
+}
+
+#play5 {
+  position: absolute;
+  top: 42.5%;
+  left: 70%;
+}
+
+
+.pnl_time {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  gap: 0px 0px;
+  grid-template-areas:
+    "kick_off break pause"
+    "clock_main clock_main period";
+  grid-area: pnl_time;
+}
+
+.pnl_actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  gap: 0px 0px;
+  grid-template-areas:
+    "stoppage pass_inc poss_loss seq_brk kick_in undo undo"
+    "clock_stop shot_on shot_off f_kick c_kick pk1 pk2";
+  grid-area: pnl_actions;
+}
+
+.pnl_opp {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  gap: 0px 0px;
+  grid-template-areas:
+    "opp_son opp_soff opp_pk1"
+    "opp_fk opp_ck opp_pk2";
+  grid-area: pnl_opp;
+}
+
+.pnl_match {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  gap: 0px 0px;
+  grid-template-areas:
+    "home home home away away away"
+    "goal_h goal_h score_h score_a goal_a goal_a";
+  grid-area: pnl_match;
+}
+
+.pnl_team {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-rows: 1fr 1fr 1fr;
+  gap: 0px 0px;
+  grid-template-areas:
+    "switch bench bench"
+    "sub bench bench"
+    "form bench bench";
+  grid-area: pnl_team;
+}
+
+.pnl_seq { grid-area: pnl_seq; }
+
+.pnl_field {
+  grid-area: pnl_field;
+  position: relative;
+}
+
+.pnl_stats {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  gap: 0px 0px;
+  grid-template-areas:
+    "p_att p_cmp p_eff"
+    "s_on s_off s_eff";
+  grid-area: pnl_stats;
+}
+
+.period { grid-area: period; }
+
+.pause { grid-area: pause; }
+
+.break { grid-area: break; }
+
+.kick_off { grid-area: kick_off; }
+
+.clock_main { grid-area: clock_main; }
+
+.undo { grid-area: undo; }
+
+.pk1 { grid-area: pk1; }
+
+.pk2 { grid-area: pk2; }
+
+.stoppage { grid-area: stoppage; }
+
+.clock_stop { grid-area: clock_stop; }
+
+.pass_inc { grid-area: pass_inc; }
+
+.poss_loss { grid-area: poss_loss; }
+
+.seq_brk { grid-area: seq_brk; }
+
+.kick_in { grid-area: kick_in; }
+
+.shot_on { grid-area: shot_on; }
+
+.shot_off { grid-area: shot_off; }
+
+.f_kick { grid-area: f_kick; }
+
+.c_kick { grid-area: c_kick; }
+
+.opp_son { grid-area: opp_son; }
+
+.opp_soff { grid-area: opp_soff; }
+
+.opp_pk1 { grid-area: opp_pk1; }
+
+.opp_pk2 { grid-area: opp_pk2; }
+
+.opp_ck { grid-area: opp_ck; }
+
+.opp_fk { grid-area: opp_fk; }
+
+.home { grid-area: home; }
+
+.away { grid-area: away; }
+
+.goal_h { grid-area: goal_h; }
+
+.goal_a { grid-area: goal_a; }
+
+.score_h { grid-area: score_h; }
+
+.score_a { grid-area: score_a; }
+
+.form { grid-area: form; }
+
+.bench { grid-area: bench; }
+
+.switch { grid-area: switch; }
+
+.sub { grid-area: sub; }
+
+.p_att { grid-area: p_att; }
+
+.p_cmp { grid-area: p_cmp; }
+
+.p_eff { grid-area: p_eff; }
+
+.s_on { grid-area: s_on; }
+
+.s_off { grid-area: s_off; }
+
+.s_eff { grid-area: s_eff; }
