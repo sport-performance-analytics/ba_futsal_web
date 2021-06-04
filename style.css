@@ -10,6 +10,7 @@
   --yellow1: #ddbd04;
   --yellow2: #f39212;
   --orange: #d86e0b;
+  --red0: #da626c;
   --red1: #f04150;
   --red2: #a71919;
   --blue1: #57d3dc;
@@ -375,7 +376,7 @@ input:checked + .slider:before {
 .txt-1.btntxt {
   height: 50%;
   font-size: 3vh;
-  color: var(--red1);
+  color: var(--red0);
   border-radius: 0vh 0vh 0.75vh 0.75vh;
   background-image: linear-gradient(180deg, var(--slate2) 0%, var(--grey2) 100%);
 }
