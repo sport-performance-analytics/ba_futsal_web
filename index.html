@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
+  <script type="text/javascript" src="http://code.jquery.com/jquery-latest.js"></script>
   <link rel="stylesheet" href="style.css">
   <title>BreakAway Futsal</title>
 </head>
@@ -16,20 +17,20 @@
       </div>
       <div class="panel" id="pnl-time">
         <label class="txt-lbl" for="period" id="lbl-period">PERIOD:</label>
-        <p class="txt-1" id="period">0</p>
-        <button class="button-1 pause" id="pause">PAUSE</button>
+        <p class="txt-1 period break" id="period">0</p>
+        <button class="button-1 pause disabled" id="pause">PAUSE</button>
         <button class="button-1 break disabled" id="break">BREAK</button>
         <button class="button-1 kickoff" id="kick-off">KICK OFF</button>
         <label class="txt-lbl" for="clock-main" id="lbl-clock-main">TIME:</label>
-        <p class="clock" id="clock-main">00:00</p>
+        <p class="clock break" id="clock-main">00:00</p>
       </div>
       <div class="panel" id="pnl-actions">
         <button class="button-1 undo" id="undo">UNDO</button>
         <button class="button-1 shot" id="pk1">PK1</button>
         <button class="button-1 shot" id="pk2">PK2</button>
-        <button class="button-1 stop" id="stoppage">STOPPAGE</button>
+        <button class="button-1 stop disabled" id="stoppage">STOPPAGE</button>
         <label class="txt-lbl" for="clock-play" id="lbl-clock-play">PLAY TIME:</label>
-        <p class="clock" id="clock-play">00:00</p>
+        <p class="clock break" id="clock-play">00:00</p>
         <button class="button-1 pass" id="pass-inc">Pass Inc.</button>
         <button class="button-1 pass" id="poss-loss">Poss. Loss</button>
         <button class="button-1 pass" id="seq-brk">Seq. Break</button>
@@ -103,7 +104,7 @@
         <div id="field-container">
           <img src="futsal.png" alt="field background" id="field-img">
           <label class="switch">
-            <input type="checkbox">
+            <input type="checkbox" id="dirswitch">
             <span class="slider"></span>
           </label>
           <div class="player" id="play1">
@@ -177,4 +178,7 @@
     </div>
   </div>
 </body>
+<script src="timer.js"></script>
+<script src="formation.js"></script>
+<script src="main.js"></script>
 </html>
