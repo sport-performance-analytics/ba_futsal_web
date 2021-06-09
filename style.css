@@ -74,6 +74,32 @@ body {
   background-image: linear-gradient(90deg, var(--blue1), var(--blue2));
 }
 
+.head-input {
+  display: none;
+}
+
+.load-file {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5vh;
+  font-weight: bolder;
+  font-family: Helvetica;
+  border-radius: 0.75vh;
+  border-style: none;
+  color: var(--grey6);
+  transition: 0.4s linear all;
+  height: 50%;
+  width: 100%;
+  background-image: linear-gradient(180deg, var(--grey0) 0%, var(--grey1) 100%);
+}
+.load-file:active {
+  opacity: 0.25;
+}
+.load-file.break {
+  opacity: 0.25;
+}
+
 /* FIELD*/
 
 /* The switch - the box around the slider */
@@ -152,7 +178,7 @@ input:checked + .slider:before {
   height:15%;
   width: 10%;
   color: var(--grey6);
-  border-radius: 2vh 0vh 2vh 0vh;
+  border-radius: 2vh 2vh 2vh 0vh;
   box-shadow: 0vh 0vh 2vh var(--grey2);
   transition: 0.4s linear all;
 }
@@ -176,6 +202,12 @@ input:checked + .slider:before {
 
 .chk-play {
   grid-area: chk-play;
+  top: 0%;
+  left: 0%;
+  margin: 0%;
+  padding: 0%;
+  height: 90%;
+  width: 90%;
 }
 
 #play1 {
@@ -211,6 +243,7 @@ input:checked + .slider:before {
 /* PANELS */
 
 .panel {
+  position: relative;
   background-image: linear-gradient(180deg, var(--grey2), var(--grey0));
   /*background-image: linear-gradient(180deg, var(--grey7), var(--grey6));*/
   border-radius: 0.75vh;
@@ -393,6 +426,9 @@ input:checked + .slider:before {
   color: var(--grey6);
   background-image: linear-gradient(180deg, var(--slate1) 0%, var(--slate2) 100%);
 }
+.txt-1.break {
+  opacity: 0.5; 
+}
 .txt-1.btntxt {
   height: 50%;
   font-size: 3vh;
@@ -418,6 +454,9 @@ input:checked + .slider:before {
   font-size: 2vh;
   border-radius: 0vh 0vh 2vh 0vh;
   background-image: linear-gradient(180deg, var(--grey3) 0%, var(--grey2) 100%);
+  overflow: hidden;
+  white-space: nowrap;
+  justify-content: left;
 }
 .txt-1.period {
   background-image: linear-gradient(180deg, var(--slate2) 0%, var(--blue1) 100%);
@@ -477,17 +516,14 @@ input:checked + .slider:before {
 .tbl-data {
   font-family: Helvetica;
   width: 100%;
-  height: 75%;
   border-radius: 0vh 0vh 0.75vh 0.75vh;
   color: var(--grey6);
-  background-image: linear-gradient(180deg, var(--slate1) 0%, var(--slate2) 100%);
 }
 
-.data-row {
+tr {
   border-bottom: var(--grey6);
   border-style: solid;
   border-width: 1vh;
-  height: 25%;
 }
 
 th{
@@ -629,6 +665,7 @@ th{
   border-right: var(--grey3);
   border-right-style: solid;
   background-image: linear-gradient(180deg, var(--orange) 0%, var(--yellow2) 100%);
+  z-index: 2;
 }
 
 #score-a {
@@ -637,6 +674,7 @@ th{
   border-left: var(--grey3);
   border-left-style: solid;
   background-image: linear-gradient(180deg, var(--orange) 0%, var(--yellow2) 100%);
+  z-index: 2;
 }
 
 /* TEAM PANEL */
