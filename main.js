@@ -1322,11 +1322,12 @@ function getAllIndexes(arr, val) {
     return indexes;
 }
 function getSequenceNo() {
-    if (Math.max(tbl_pass["sequence"])==0) {
+    if (tbl_pass["sequence"].length==0) {
         seqNo = 1;
     } else {
-        seqNo = Math.max(...tbl_pass["sequence"]) + 1;
+        seqNo = Math.max.apply(null, tbl_pass["sequence"]) + 1;
     }
+    return seqNo
 }
 function updateStats() {
     // PASS
