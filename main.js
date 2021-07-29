@@ -24,8 +24,6 @@ var IntervalP;
 // Team
 var txtHScore = document.getElementById("score-h")
 var txtAScore = document.getElementById("score-a")
-var btnSub = document.getElementById("sub");
-var btnSwitch = document.getElementById("switch");
 var listBench = document.getElementById("bench");
 var formMenu = document.getElementById("form");
 var btnP1 = document.getElementById("btn1");
@@ -65,32 +63,17 @@ var txtOCK = document.getElementById("otxt-ck");
 var txtOPK1 = document.getElementById("otxt-pk1");
 var txtOPK2 = document.getElementById("otxt-pk2");
 // Stats
-var tblPass = document.getElementById("tbl-pass");
 var txtPATT = document.getElementById("txt-patt");
 var txtPCMP = document.getElementById("txt-pcmp");
 var txtPEFF = document.getElementById("txt-peff");
 var txtSON = document.getElementById("txt-son");
 var txtSOFF = document.getElementById("txt-soff");
 var txtSEFF = document.getElementById("txt-seff");
+//Analysis
+var tblAnlHead = document.getElementById("tbl-anl");
 
 // Helper
 const arrSum = arr => arr.reduce((a,b) => a + b, 0);
-//#endregion
-
-//#region UI SET
-window.onload = function() {
-    toggleActions(false);
-    toggleMatch(false);
-    toggleOpp(false);
-    togglePlayers(false);
-    toggleStats(false);
-    buttonEnable(clockBreak, false);
-    buttonEnable(clockPause, false);
-    buttonEnable(clockStop, false);
-    buttonEnable(btnSave, false);
-    buttonEnable(btnExport, false);
-    enableSubSwitch(getKeyArray(struct_field["players"], "selected"));
-}
 //#endregion
 
 //#region  INITIALIZATION
@@ -501,57 +484,12 @@ document.getElementById("chk5").onclick = function() {
 
 function enableSubSwitch(selArray) {
     if (arrSum(selArray)==1) {
-        buttonEnable(btnSub, true);
-        buttonEnable(btnSwitch, false);
     } else if (arrSum(selArray)==2) {
-        buttonEnable(btnSub, false);
-        buttonEnable(btnSwitch, true);
-    } else {
-        buttonEnable(btnSub, false);
-        buttonEnable(btnSwitch, false);
+        switchPlayers();
     }
 }
 
-btnSub.onclick = function() {
-    var selArray = getKeyArray(struct_field["players"], "selected");
-    var selIdx = getAllIndexes(selArray, 1)[0];
-    var offNo = struct_field["players"][selIdx]["pno"];
-    var offID = getAllIndexes(getKeyArray(struct_team["players"], "pno"), offNo)[0];
-
-    var benchLbl = listBench.options[listBench.selectedIndex].text;
-    var onNo = benchLbl.split("] ")[0].split("[")[1];
-    var onID = getAllIndexes(getKeyArray(struct_team["players"], "pno"), onNo)[0];
-
-    struct_team["players"][offID]["active"] = 0;
-    struct_team["players"][onID]["active"] = 1;
-    struct_field["players"][selIdx] = struct_team["players"][onID];
-
-    // Update Match Table
-    updateTime();
-    var timeMain = parseClock(struct_time["clock_main"]);
-    var timePlay = parseClock(struct_time["clock_play"]);
-    tbl_match["index"].push(tbl_match["index"].length + 1);
-    tbl_match["period"].push(struct_time["period"]);
-    tbl_match["min_run"].push(timeMain[0]);
-    tbl_match["sec_run"].push(timeMain[1]);
-    tbl_match["min_eff"].push(timePlay[0]);
-    tbl_match["sec_eff"].push(timePlay[1]);
-    tbl_match["result"].push("substitution");
-    tbl_match["player_id1"].push(struct_team["players"][offID]["pid"]);
-    tbl_match["field_id1"].push(selIdx+1);
-    tbl_match["player_no1"].push(struct_team["players"][offID]["pno"]);
-    tbl_match["last_name1"].push(struct_team["players"][offID]["nlast"]);
-    tbl_match["player_id2"].push(struct_team["players"][onID]["pid"]);
-    tbl_match["field_id2"].push(-1);
-    tbl_match["player_no2"].push(struct_team["players"][onID]["pno"]);
-    tbl_match["last_name2"].push(struct_team["players"][onID]["nlast"]);
-
-    updateButtonLabels();
-    updateBenchList();
-    enableSubSwitch(getKeyArray(struct_field["players"], "selected"));
-}
-
-btnSwitch.onclick = function() {
+function switchPlayers() {
     var selArray = getKeyArray(struct_field["players"], "selected");
     var selIdx = getAllIndexes(selArray, 1);
     var player1 = struct_field["players"][selIdx[0]];
@@ -583,6 +521,48 @@ btnSwitch.onclick = function() {
     updateButtonLabels();
     enableSubSwitch(getKeyArray(struct_field["players"], "selected"));
 }
+
+listBench.onchange = function(){
+    var selArray = getKeyArray(struct_field["players"], "selected");
+    if (arrSum(selArray)==1) {
+        var selIdx = getAllIndexes(selArray, 1)[0];
+        var offNo = struct_field["players"][selIdx]["pno"];
+        var offID = getAllIndexes(getKeyArray(struct_team["players"], "pno"), offNo)[0];
+
+        var benchLbl = listBench.options[listBench.selectedIndex].text;
+        var onNo = benchLbl.split("] ")[0].split("[")[1];
+        var onID = getAllIndexes(getKeyArray(struct_team["players"], "pno"), onNo)[0];
+
+        struct_team["players"][offID]["active"] = 0;
+        struct_team["players"][onID]["active"] = 1;
+        struct_field["players"][selIdx] = struct_team["players"][onID];
+
+        // Update Match Table
+        updateTime();
+        var timeMain = parseClock(struct_time["clock_main"]);
+        var timePlay = parseClock(struct_time["clock_play"]);
+        tbl_match["index"].push(tbl_match["index"].length + 1);
+        tbl_match["period"].push(struct_time["period"]);
+        tbl_match["min_run"].push(timeMain[0]);
+        tbl_match["sec_run"].push(timeMain[1]);
+        tbl_match["min_eff"].push(timePlay[0]);
+        tbl_match["sec_eff"].push(timePlay[1]);
+        tbl_match["result"].push("substitution");
+        tbl_match["player_id1"].push(struct_team["players"][offID]["pid"]);
+        tbl_match["field_id1"].push(selIdx+1);
+        tbl_match["player_no1"].push(struct_team["players"][offID]["pno"]);
+        tbl_match["last_name1"].push(struct_team["players"][offID]["nlast"]);
+        tbl_match["player_id2"].push(struct_team["players"][onID]["pid"]);
+        tbl_match["field_id2"].push(-1);
+        tbl_match["player_no2"].push(struct_team["players"][onID]["pno"]);
+        tbl_match["last_name2"].push(struct_team["players"][onID]["nlast"]);
+
+        updateButtonLabels();
+        updateBenchList();
+        enableSubSwitch(getKeyArray(struct_field["players"], "selected"));
+    }
+    listBench.selectedIndex = -1;
+}
 //#endregion
 
 //#region Opposition Actions
@@ -607,6 +587,39 @@ btnOCK.onclick = function(){registerOppAction(txtOCK, "corner kick")};
 btnOPK1.onclick = function(){registerOppAction(txtOPK1, "penalty 1")};
 btnOPK2.onclick = function(){registerOppAction(txtOPK2, "penalty 2")};
 
+//#endregion
+
+//#region Analysis
+function createAnlTable() {
+    var tbl_anl = {
+        "Players": [],
+        "Rotations": [],
+        "In Degree": [],
+        "Out Degree": []
+    }
+}
+
+function updateAnlTableHead() {
+    tblAnlHead.innerHTML = "";
+    
+    var table = "";
+    var metrics = ["Players", "Rotations", "Play Time", "In Degree", "Out Degree"];
+    rows = metrics.length;
+    var cols = struct_team.players.length;
+    for (var r=0; r<rows; r++) {
+        table += "<tr>";
+        table += "<th style='background-color:black'>" + metrics[r] +"</th>";
+        for (var c=0; c<cols; c++) {
+            if (r==0) {
+                table += "<th style='background-color:black'>" + struct_team.players[c].nlast + "</th>"
+            } else {
+                table += "<th> - </th>"
+            }
+        }
+        table += "</tr>";
+    }
+    tblAnlHead.innerHTML = table;
+}
 //#endregion
 
 //#region Team Actions+Passing
@@ -635,22 +648,6 @@ function remPassCur() {
     for (entry in tbl_cpass) {
         tbl_cpass[entry].pop();
     }
-}
-function updatePassTable() {
-    tblPass.innerHTML = "";
-    
-    var data = [tbl_cpass["pass_num"], tbl_cpass["player_no"], tbl_cpass["last_name"]];
-    var table = "";
-    var rows = data[0].length;
-    var cols = data.length;
-    for (var r=0; r<rows; r++) {
-        table += "<tr>";
-        for (var c=0; c<cols; c++) {
-            table += "<th>" + data[c][r] + "</th>"
-        }
-        table += "</tr>";
-    }
-    tblPass.innerHTML = table;
 }
 function finalizeSeq(lbl) {
     buttonEnable(clockStop, true);
@@ -722,11 +719,11 @@ function togglePassActor() {
         buttonEnable(el, false)
     }
 }
-btnP1.onclick = function(){addPassCur(1);updatePassTable();toggleActions(true);buttonEnable(clockStop, false);togglePassActor()}
-btnP2.onclick = function(){addPassCur(2);updatePassTable();toggleActions(true);buttonEnable(clockStop, false);togglePassActor()}
-btnP3.onclick = function(){addPassCur(3);updatePassTable();toggleActions(true);buttonEnable(clockStop, false);togglePassActor()}
-btnP4.onclick = function(){addPassCur(4);updatePassTable();toggleActions(true);buttonEnable(clockStop, false);togglePassActor()}
-btnP5.onclick = function(){addPassCur(5);updatePassTable();toggleActions(true);buttonEnable(clockStop, false);togglePassActor()}
+btnP1.onclick = function(){addPassCur(1);toggleActions(true);buttonEnable(clockStop, false);togglePassActor()}
+btnP2.onclick = function(){addPassCur(2);toggleActions(true);buttonEnable(clockStop, false);togglePassActor()}
+btnP3.onclick = function(){addPassCur(3);toggleActions(true);buttonEnable(clockStop, false);togglePassActor()}
+btnP4.onclick = function(){addPassCur(4);toggleActions(true);buttonEnable(clockStop, false);togglePassActor()}
+btnP5.onclick = function(){addPassCur(5);toggleActions(true);buttonEnable(clockStop, false);togglePassActor()}
 btnUndo.onclick = function() {
     remPassCur();
     updatePassTable();
@@ -916,6 +913,7 @@ function loadTeamInfo() {
       updateTeamInfo(matchInfo, playerInfo);
       updateButtonLabels();
       updateBenchList();
+      updateAnlTableHead();
     };
     reader.readAsArrayBuffer(file);
 }
@@ -1201,6 +1199,23 @@ btnExport.onclick = function() {
     var wbout = XLSX.write(wb, {bookType:'xlsx',  type: 'binary'});
     saveAs(new Blob([s2ab(wbout)],{type:"application/octet-stream"}), fileName);
 };
+//#endregion
+
+//#region UI SET
+window.onload = function() {
+    toggleActions(false);
+    toggleMatch(false);
+    toggleOpp(false);
+    togglePlayers(false);
+    toggleStats(false);
+    buttonEnable(clockBreak, false);
+    buttonEnable(clockPause, false);
+    buttonEnable(clockStop, false);
+    buttonEnable(btnSave, false);
+    buttonEnable(btnExport, false);
+    enableSubSwitch(getKeyArray(struct_field["players"], "selected"));
+    updateAnlTableHead();
+}
 //#endregion
 
 function updateButtonLabels() {
