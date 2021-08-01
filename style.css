@@ -41,7 +41,7 @@ body {
 #grid-container {
   display: grid;
   grid-template-columns: 22vw 22vw 22vw 22vw;
-  grid-template-rows: 8vh 17vh 17vh 17vh 17vh 17vh 17vh;
+  grid-template-rows: 8vh 17vh 17vh 17vh 17vh 17vh 25vh;
   gap: 1vh 2vw;
   grid-template-areas:
     "header header header header"
