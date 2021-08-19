@@ -1094,7 +1094,7 @@ function loadTeamInfo() {
         "nlast": [],
         "position": []
       };
-      for (var i=14; i<29; i++) {
+      for (var i=14; i<30; i++) {
         playerInfo["pid"].push(sheet["A"+i]["v"]);
         playerInfo["pno"].push(sheet["B"+i]["v"]);
         playerInfo["nfirst"].push(sheet["C"+i]["v"]);
@@ -1105,7 +1105,7 @@ function loadTeamInfo() {
       updateTeamInfo(matchInfo, playerInfo);
       updateButtonLabels();
       updateBenchList();
-      updateAnlTableHead();
+      updateAnlUITable();
     };
     reader.readAsArrayBuffer(file);
 }
