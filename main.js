@@ -1,5 +1,5 @@
 //#region var/const declarations;
-var lastNames = ["One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Ten", "Eleven", "Twelve", "Thirteen", "Fourteen", "Fifteen"]
+var lastNames = ["One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Ten", "Eleven", "Twelve", "Thirteen", "Fourteen", "Fifteen","Sixteen"]
 // Header
 var btnLoadTeam = document.getElementById("head-team");
 var btnLoadMatch = document.getElementById("head-match");
@@ -80,12 +80,12 @@ const arrSum = arr => arr.reduce((a,b) => a + b, 0);
 //#region  Initialize Dictionaries
 var struct_general = {  // Generic Container
     "nplay": 5,
-    "nsub": 10
+    "nsub": 11
 };
 var struct_time = { // Time Container
     "period": clockPer.innerHTML,
     "clock_main": clockMain.innerHTML,
-    "clock_play": clockMain.innerHTML,
+    "clock_play": clockPlay.innerHTML,
     "kickofftgl": 0,
     "pausetgl": 0,
     "stoptgl": 0
@@ -219,8 +219,8 @@ var tbl_zone = {
     "result": []
 }
 for (var i = 0; i<struct_general["nplay"]; i++) {
-    var timeMain = parseClock(struct_time["clock_main"]);
-    var timePlay = parseClock(struct_time["clock_play"]);
+    var timeMain = parseClock(struct_time["clock_main"],0);
+    var timePlay = parseClock(struct_time["clock_play"],1);
     tbl_match["index"].push(i+2);
     tbl_match["period"].push(struct_time["period"]);
     tbl_match["min_run"].push(timeMain[0]);
@@ -238,8 +238,8 @@ for (var i = 0; i<struct_general["nplay"]; i++) {
     tbl_match["last_name2"].push("");
 }
 var tbl_anl = {
-    "Play Time": [],
-    "Rest Time": [],
+    "Play Time (s)": [],
+    "Rest Time (s)": [],
     "W/R Ratio": [],
     "Rotations": [],
     "Pass %": [],
@@ -248,8 +248,8 @@ var tbl_anl = {
 }
 for (var i = 0; i<struct_general["nplay"]+struct_general["nsub"]; i++) {
     tbl_anl["Rotations"].push(0);
-    tbl_anl["Play Time"].push(0);
-    tbl_anl["Rest Time"].push(0);
+    tbl_anl["Play Time (s)"].push(0);
+    tbl_anl["Rest Time (s)"].push(0);
     tbl_anl["W/R Ratio"].push(0);
     tbl_anl["Pass %"].push(0);
     tbl_anl["Shot %"].push(0);
@@ -273,8 +273,8 @@ clockKickOff.onclick = function() {
 
     // Update Match Table
     updateTime();
-    var timeMain = parseClock(struct_time["clock_main"]);
-    var timePlay = parseClock(struct_time["clock_play"]);
+    var timeMain = parseClock(struct_time["clock_main"],0);
+    var timePlay = parseClock(struct_time["clock_play"],1);
     tbl_match["index"].push(tbl_match["index"].length + 1)
     tbl_match["period"].push(struct_time["period"]);
     tbl_match["min_run"].push(timeMain[0]);
@@ -319,8 +319,8 @@ clockBreak.onclick = function() {
     
     // Update Match Table
     updateTime();
-    var timeMain = parseClock(struct_time["clock_main"]);
-    var timePlay = parseClock(struct_time["clock_play"]);
+    var timeMain = parseClock(struct_time["clock_main"],0);
+    var timePlay = parseClock(struct_time["clock_play"],1);
     tbl_match["index"].push(tbl_match["index"].length + 1)
     tbl_match["period"].push(struct_time["period"]);
     tbl_match["min_run"].push(timeMain[0]);
@@ -338,12 +338,12 @@ clockBreak.onclick = function() {
     tbl_match["last_name2"].push("");
 
     minutesM = "0";
-    secondsM = "00";
-    displayClock(clockMain, minutesM, secondsM)
+    secondsM = "0";
+    displayClock(clockMain, minutesM, secondsM, 0)
 
     minutesP = "0";
-    secondsP = "00";
-    displayClock(clockPlay, minutesP, secondsP)
+    secondsP = "0";
+    displayClock(clockPlay, minutesP, secondsP, 1)
 
     // Toggles
     struct_time["kickofftgl"] = 0;
@@ -423,53 +423,88 @@ clockStop.onclick = function() {
     }
 }
 function startMain() {
-    secondsM++; 
-
-    if(secondsM <= 9){
-    secondsM = "0" + secondsM;
-    }
+    secondsM++;
     
     if (secondsM > 59) {
     minutesM++;
     secondsM = 0;
     }
 
-    displayClock(clockMain, minutesM, secondsM)
+    displayClock(clockMain, minutesM, secondsM, 0)
 }
 function startPlay() {
-    secondsP++; 
-
-    if(secondsP <= 9){
-    secondsP = "0" + secondsP;
-    }
+    secondsP++;
     
     if (secondsP > 59) {
     minutesP++;
     secondsP = 0;
     }
 
-    displayClock(clockPlay, minutesP, secondsP)
+    displayClock(clockPlay, minutesP, secondsP, 1)
+
     for (i=0; i<struct_team.players.length; i++) {
         if (struct_team.players[i].active==1) {
-            tbl_anl["Play Time"][i]++;
+            tbl_anl["Play Time (s)"][i]++;
         } else {
-            tbl_anl["Rest Time"][i]++;
+            tbl_anl["Rest Time (s)"][i]++;
         }
-        tbl_anl["W/R Ratio"][i] = Math.round(100*tbl_anl["Play Time"][i] / (tbl_anl["Rest Time"][i]+1))/100;
+        tbl_anl["W/R Ratio"][i] = Math.round(100*tbl_anl["Play Time (s)"][i] / (tbl_anl["Rest Time (s)"][i]+1))/100;
     }
     updateAnlUITable()
 }
-function displayClock(clockTxt, minutes, seconds) {
-    if(minutesP <= 9){
-        clockTxt.innerHTML = "0" + minutes + ":" + seconds;
+function displayClock(clockTxt, minutes, seconds, mode) {
+    // mode: 0 - Main Clock, 1 - Play Clock
+    if (mode==0) {
+        var minutesTxt = minutes
+        var secondsTxt = seconds
+        if(minutes<=9){
+            minutesTxt = "0" + minutes
+        }
+        if(seconds<=9){
+            secondsTxt = "0" + seconds
+        }
+        clockTxt.innerHTML = minutesTxt + ":" + secondsTxt;
     } else {
-        clockTxt.innerHTML = minutes + ":" + seconds;
+        var secondsTotal = 1200 - (seconds + 60*minutes)
+        if (secondsTotal>=0) {
+            clockTxt.innerHTML = setClock(secondsTotal)
+        } else {
+            var minutesTxt = Math.ceil(secondsTotal/60);
+            var secondsTxt = Math.abs(secondsTotal - 60*minutesTxt);
+            if (minutesTxt>-10) {
+                minutesTxt = "-0" + Math.abs(minutesTxt);
+            }
+            if (secondsTxt<10) {
+                secondsTxt = "0" + secondsTxt;
+            }
+            clockTxt.innerHTML = minutesTxt + ":" + secondsTxt
+        }
     }
 }
-function parseClock(clockTxt) {
-    clockArr = clockTxt.split(":");
-    minutes = clockArr[0];
-    seconds = clockArr[1];
+function parseClock(clockTxt, mode) {
+    // 0: Main Clock, 1: Play Clock
+    if (mode==0) {
+        clockArr = clockTxt.split(":");
+        minutes = clockArr[0];
+        seconds = clockArr[1];
+    } else {
+        clockArr = clockTxt.split(":");
+        console.log(clockArr)
+        secondsTotal = 1200 - (60*parseInt(clockArr[0]) + parseInt(clockArr[1]));
+        console.log(secondsTotal)
+        minutes = Math.floor(secondsTotal/60);
+        seconds = secondsTotal - 60*minutes;
+        if (minutes<=9) {
+            minutes = "0"+minutes;
+        } else {
+            minutes = minutes.toString();
+        }
+        if (seconds<=9) {
+            seconds = "0"+seconds;
+        } else {
+            seconds = seconds.toString();
+        }
+    }
 
     return [minutes, seconds]
 }
@@ -563,8 +598,8 @@ function switchPlayers() {
 
     // Update Match Table
     updateTime();
-    var timeMain = parseClock(struct_time["clock_main"]);
-    var timePlay = parseClock(struct_time["clock_play"]);
+    var timeMain = parseClock(struct_time["clock_main"],0);
+    var timePlay = parseClock(struct_time["clock_play"],1);
     tbl_match["index"].push(tbl_match["index"].length + 1);
     tbl_match["period"].push(struct_time["period"]);
     tbl_match["min_run"].push(timeMain[0]);
@@ -603,8 +638,8 @@ listBench.onchange = function(){
 
         // Update Match Table
         updateTime();
-        var timeMain = parseClock(struct_time["clock_main"]);
-        var timePlay = parseClock(struct_time["clock_play"]);
+        var timeMain = parseClock(struct_time["clock_main"],0);
+        var timePlay = parseClock(struct_time["clock_play"],1);
         tbl_match["index"].push(tbl_match["index"].length + 1);
         tbl_match["period"].push(struct_time["period"]);
         tbl_match["min_run"].push(timeMain[0]);
@@ -635,8 +670,8 @@ function registerOppAction(txt, action) {
     txt.innerHTML++;
     // Update Opp Table
     updateTime();
-    var timeMain = parseClock(struct_time["clock_main"]);
-    var timePlay = parseClock(struct_time["clock_play"]);
+    var timeMain = parseClock(struct_time["clock_main"],0);
+    var timePlay = parseClock(struct_time["clock_play"],1);
     tbl_opp["index"].push(tbl_opp["index"].length + 1)
     tbl_opp["period"].push(struct_time["period"]);
     tbl_opp["min_run"].push(timeMain[0]);
@@ -758,8 +793,8 @@ function addPassCur(pID) {
     if (tbl_cpass["index"].length==0 || tbl_cpass["player_no"][tbl_cpass["player_no"].length-1] !== struct_field["players"][pID-1]["pno"]) {
         updateTime();
         var player = struct_field["players"][pID-1]
-        var timeMain = parseClock(struct_time["clock_main"]);
-        var timePlay = parseClock(struct_time["clock_play"]);
+        var timeMain = parseClock(struct_time["clock_main"],0);
+        var timePlay = parseClock(struct_time["clock_play"],1);
         tbl_cpass["index"].push(tbl_pass["index"].length + tbl_cpass["index"].length + 1);
         tbl_cpass["sequence"].push(getSequenceNo());
         tbl_cpass["pass_num"].push(tbl_cpass["index"].length);
@@ -785,8 +820,8 @@ function finalizeSeq(lbl) {
     // Own Goal Case
     if (lbl=="goal for" && tbl_cpass["index"].length==0) {
         updateTime();
-        var timeMain = parseClock(struct_time["clock_main"]);
-        var timePlay = parseClock(struct_time["clock_play"]);
+        var timeMain = parseClock(struct_time["clock_main"],0);
+        var timePlay = parseClock(struct_time["clock_play"],1);
         tbl_cpass["index"].push(tbl_pass["index"].length + tbl_cpass["index"].length + 1);
         tbl_cpass["sequence"].push(getSequenceNo());
         tbl_cpass["pass_num"].push(1);
@@ -875,7 +910,7 @@ function updatePlayerTable() {
             }
         }
     }
-    console.log(tbl_player)
+    console.log(Object.keys(tbl_anl))
 }
 btnP1.onclick = function(){addPassCur(1);toggleActions(true);buttonEnable(clockStop, false);togglePassActor()}
 btnP2.onclick = function(){addPassCur(2);toggleActions(true);buttonEnable(clockStop, false);togglePassActor()}
@@ -934,8 +969,8 @@ formMenu.onchange = function() {
 
     // Update Match Table
     updateTime();
-    var timeMain = parseClock(struct_time["clock_main"]);
-    var timePlay = parseClock(struct_time["clock_play"]);
+    var timeMain = parseClock(struct_time["clock_main"],0);
+    var timePlay = parseClock(struct_time["clock_play"],1);
     tbl_match["index"].push(tbl_match["index"].length + 1)
     tbl_match["period"].push(struct_time["period"]);
     tbl_match["min_run"].push(timeMain[0]);
@@ -1305,6 +1340,26 @@ btnExport.onclick = function() {
         }
     }
 
+    // Playing Stats Tab
+    var dataPlayEvents = [];
+    // Header
+    var headerrow = []
+    headerrow.push('Jersey #')
+    headerrow.push('Display Name')
+    dataPlayEvents.push(headerrow.concat(Object.keys(tbl_anl)));
+    // Data
+    if (tbl_anl.Rotations.length > 0) {
+        for (var row=0; row<tbl_anl.Rotations.length; row++) {
+            var datarow = [];
+            datarow.push(struct_team.players[row].pno)
+            datarow.push(struct_team.players[row].nlast)
+            for (var col=0; col<Object.keys(tbl_anl).length; col++) {
+                datarow.push(tbl_anl[Object.keys(tbl_anl)[col]][row])
+            }
+            dataPlayEvents.push(datarow.slice());
+        }
+    }
+
     // Pass Matrix Tab
     var dataPassMatrix = [[],[],[],[],[]];
     var passMat = getPassMatrix();
@@ -1348,6 +1403,7 @@ btnExport.onclick = function() {
     wb = pushSheet(wb, "Match Events", dataMatchEvents);
     wb = pushSheet(wb, "Opposition Events", dataOppEvents);
     wb = pushSheet(wb, "Team Events", dataTeamEvents);
+    wb = pushSheet(wb, "Playing Stats", dataPlayEvents);
     wb = pushSheet(wb, "Pass Matrix", dataPassMatrix);
 
     // Export
