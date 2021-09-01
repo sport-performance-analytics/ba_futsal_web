@@ -38,11 +38,14 @@ const btnWidth = 10;
 // Actions
 var btnUndo = document.getElementById("undo");
 var btnPINC = document.getElementById("pass-inc");
-var btnPLOSS = document.getElementById("poss-loss");
+var btnDWON = document.getElementById("duel-won");
+var btnPLOSS = document.getElementById("duel-loss");
+var btnPGAIN = document.getElementById("recovery");
+var btnBLK = document.getElementById("block");
 var btnSEQ = document.getElementById("seq-brk");
-var btnKIN = document.getElementById("kick-in");
 var btnSON = document.getElementById("shot-on");
 var btnSOFF = document.getElementById("shot-off");
+var btnSBLK = document.getElementById("shot-block");
 var btnFK = document.getElementById("f-kick");
 var btnCK = document.getElementById("c-kick");
 var btnPK1 = document.getElementById("pk1");
@@ -175,6 +178,21 @@ var tbl_pass = {
     "last_name": [],
     "result": []
 }
+var tbl_actions = {
+    "index": [],
+    "sequence": [],
+    "pass_num": [],
+    "period": [],
+    "min_run": [],
+    "sec_run": [],
+    "min_eff": [],
+    "sec_eff": [],
+    "player_id": [],
+    "field_id": [],
+    "player_no": [],
+    "last_name": [],
+    "result": []
+}
 var tbl_opp = {
     "index": [],
     "period": [],
@@ -201,23 +219,6 @@ var tbl_match = {
     "player_no2": [-1],
     "last_name2": [""],
 }
-var tbl_zone = {
-    "index": [],
-    "sequence": [],
-    "pass_num": [],
-    "period": [],
-    "min_run": [],
-    "sec_run": [],
-    "min_eff": [],
-    "sec_eff": [],
-    "start_x": [],
-    "start_y": [],
-    "start_zone": [],
-    "end_x": [],
-    "end_y": [],
-    "end_zone": [],
-    "result": []
-}
 for (var i = 0; i<struct_general["nplay"]; i++) {
     var timeMain = parseClock(struct_time["clock_main"],0);
     var timePlay = parseClock(struct_time["clock_play"],1);
@@ -241,18 +242,22 @@ var tbl_anl = {
     "Play Time (s)": [],
     "Rest Time (s)": [],
     "W/R Ratio": [],
+    "Rotation Time (s)": [],
     "Rotations": [],
     "Pass %": [],
     "Shot %": [],
+    "Duels Won": [],
     "Source-Sink": [],
 }
 for (var i = 0; i<struct_general["nplay"]+struct_general["nsub"]; i++) {
     tbl_anl["Rotations"].push(0);
     tbl_anl["Play Time (s)"].push(0);
     tbl_anl["Rest Time (s)"].push(0);
+    tbl_anl["Rotation Time (s)"].push(0);
     tbl_anl["W/R Ratio"].push(0);
     tbl_anl["Pass %"].push(0);
     tbl_anl["Shot %"].push(0);
+    tbl_anl["Duels Won"].push(0);
     tbl_anl["Source-Sink"].push(0);
     if (i<struct_general["nplay"]) {
         tbl_anl.Rotations[tbl_anl.Rotations.length-1] = 1;
@@ -445,6 +450,7 @@ function startPlay() {
     for (i=0; i<struct_team.players.length; i++) {
         if (struct_team.players[i].active==1) {
             tbl_anl["Play Time (s)"][i]++;
+            tbl_anl["Rotation Time (s)"][i]++;
         } else {
             tbl_anl["Rest Time (s)"][i]++;
         }
@@ -455,13 +461,13 @@ function startPlay() {
 function displayClock(clockTxt, minutes, seconds, mode) {
     // mode: 0 - Main Clock, 1 - Play Clock
     if (mode==0) {
-        var minutesTxt = minutes
-        var secondsTxt = seconds
+        var minutesTxt = parseInt(minutes)
+        var secondsTxt = parseInt(seconds)
         if(minutes<=9){
-            minutesTxt = "0" + minutes
+            minutesTxt = "0" + parseInt(minutes)
         }
         if(seconds<=9){
-            secondsTxt = "0" + seconds
+            secondsTxt = "0" + parseInt(seconds)
         }
         clockTxt.innerHTML = minutesTxt + ":" + secondsTxt;
     } else {
@@ -529,7 +535,8 @@ function updateTime() {
 //#region Player Switch/Sub Functions
 //#region Initialize Player Select
 document.getElementById("chk1").onclick = function() {
-    if (document.getElementById("chk1").checked==true && tbl_cpass.pass_num.length==0) {
+    //  && tbl_cpass.pass_num.length==0
+    if (document.getElementById("chk1").checked==true) {
         struct_field["players"][0]["selected"] = 1;
     } else {
         document.getElementById("chk1").checked = false
@@ -539,7 +546,7 @@ document.getElementById("chk1").onclick = function() {
     enableSubSwitch(selArray);
 }
 document.getElementById("chk2").onclick = function() {
-    if (document.getElementById("chk2").checked==true && tbl_cpass.pass_num.length==0) {
+    if (document.getElementById("chk2").checked==true) {
         struct_field["players"][1]["selected"] = 1;
     } else {
         document.getElementById("chk2").checked = false
@@ -549,7 +556,7 @@ document.getElementById("chk2").onclick = function() {
     enableSubSwitch(selArray);
 }
 document.getElementById("chk3").onclick = function() {
-    if (document.getElementById("chk3").checked==true && tbl_cpass.pass_num.length==0) {
+    if (document.getElementById("chk3").checked==true) {
         struct_field["players"][2]["selected"] = 1;
     } else {
         document.getElementById("chk3").checked = false
@@ -559,7 +566,7 @@ document.getElementById("chk3").onclick = function() {
     enableSubSwitch(selArray);
 }
 document.getElementById("chk4").onclick = function() {
-    if (document.getElementById("chk4").checked==true && tbl_cpass.pass_num.length==0) {
+    if (document.getElementById("chk4").checked==true) {
         struct_field["players"][3]["selected"] = 1;
     } else {
         document.getElementById("chk4").checked = false
@@ -569,7 +576,7 @@ document.getElementById("chk4").onclick = function() {
     enableSubSwitch(selArray);
 }
 document.getElementById("chk5").onclick = function() {
-    if (document.getElementById("chk5").checked==true && tbl_cpass.pass_num.length==0) {
+    if (document.getElementById("chk5").checked==true) {
         struct_field["players"][4]["selected"] = 1;
     } else {
         document.getElementById("chk5").checked = false
@@ -635,6 +642,7 @@ listBench.onchange = function(){
         struct_team["players"][onID]["active"] = 1;
         struct_field["players"][selIdx] = struct_team["players"][onID];
         tbl_anl.Rotations[onID] += 1;
+        tbl_anl["Rotation Time (s)"][offID] = 0;
 
         // Update Match Table
         updateTime();
@@ -718,7 +726,7 @@ function updateAnlUITable() {
             // Data Format
             if (r>0) {
                 var cellData = tbl_anl[metrics[r-1]][c];
-                if (r==1 || r==2) {
+                if (r==1 || r==2 || r==4) {
                     cellData = setClock(cellData);
                 }
                 // Cell Color
@@ -790,7 +798,8 @@ function updateAnlPlayStats() {
 
 //#region Team Actions+Passing
 function addPassCur(pID) {
-    if (tbl_cpass["index"].length==0 || tbl_cpass["player_no"][tbl_cpass["player_no"].length-1] !== struct_field["players"][pID-1]["pno"]) {
+    if (tbl_cpass["index"].length==0 ||
+    tbl_cpass["player_no"][tbl_cpass["player_no"].length-1] !== struct_field["players"][pID-1]["pno"]) {
         updateTime();
         var player = struct_field["players"][pID-1]
         var timeMain = parseClock(struct_time["clock_main"],0);
@@ -808,6 +817,31 @@ function addPassCur(pID) {
         tbl_cpass["player_no"].push(player["pno"]);
         tbl_cpass["last_name"].push(player["nlast"]);
         tbl_cpass["result"].push("pass");
+    }
+}
+function addAction(lbl) {
+    pID = tbl_cpass["player_no"][tbl_cpass["player_no"].length-1]
+    updateTime();
+    var player = struct_field["players"][pID-1]
+    var timeMain = parseClock(struct_time["clock_main"],0);
+    var timePlay = parseClock(struct_time["clock_play"],1);
+    tbl_actions["index"].push(tbl_pass["index"].length + tbl_cpass["index"].length + 1);
+    tbl_actions["sequence"].push(getSequenceNo());
+    tbl_actions["pass_num"].push(tbl_cpass["index"].length);
+    tbl_actions["period"].push(struct_time["period"]);
+    tbl_actions["min_run"].push(timeMain[0]);
+    tbl_actions["sec_run"].push(timeMain[1]);
+    tbl_actions["min_eff"].push(timePlay[0]);
+    tbl_actions["sec_eff"].push(timePlay[1]);
+    tbl_actions["player_id"].push(player["pid"]);
+    tbl_actions["field_id"].push(pID);
+    tbl_actions["player_no"].push(player["pno"]);
+    tbl_actions["last_name"].push(player["nlast"]);
+    tbl_actions["last_name"].push(player["nlast"]);
+    tbl_actions["result"].push(lbl);
+
+    if (lbl=="duel won") {
+        tbl_anl["Duels Won"][pID]++;
     }
 }
 function remPassCur() {
@@ -925,11 +959,14 @@ btnUndo.onclick = function() {
     togglePassActor()
 }
 btnPINC.onclick = function() {finalizeSeq("pass incomplete");toggleActions(false);togglePassActor()}
+btnDWON.onclick = function() {addAction("duel won")}
 btnPLOSS.onclick = function() {finalizeSeq("possession loss");toggleActions(false);togglePassActor()}
+btnBLK.onclick = function() {addAction("block")}
+btnPGAIN.onclick = function() {addAction("possession gain")}
 btnSEQ.onclick = function() {finalizeSeq("sequence break");toggleActions(false);togglePassActor()}
-btnKIN.onclick = function() {finalizeSeq("kick in");toggleActions(false);togglePassActor()}
 btnSON.onclick = function() {finalizeSeq("shot on");toggleActions(false);togglePassActor()}
 btnSOFF.onclick = function() {finalizeSeq("shot off");toggleActions(false);togglePassActor()}
+btnSBLK.onclick = function() {finalizeSeq("shot block");toggleActions(false);togglePassActor()}
 btnCK.onclick = function() {finalizeSeq("corner kick");toggleActions(false);togglePassActor()}
 btnFK.onclick = function() {finalizeSeq("free kick");toggleActions(false);togglePassActor()}
 btnPK1.onclick = function() {finalizeSeq("penalty 1");toggleActions(false);togglePassActor()}
@@ -1151,14 +1188,24 @@ btnLoadMatch.onchange = function() {
             struct_field = match_data["field"];
             tbl_cpass = match_data["tbl_cpass"];
             tbl_pass = match_data["tbl_pass"];
+            tbl_actions = match_data["tbl_actions"];
             tbl_opp = match_data["tbl_opp"];
             tbl_match = match_data["tbl_match"];
-            tbl_zone = match_data["tbl_zone"];
+            tbl_anl = match_data["tbl_anl"];
+
+            // UPDATE MINUTES + SECONDS        
+            var timeMain = parseClock(struct_time["clock_main"],0);
+            var timePlay = parseClock(struct_time["clock_play"],1);
+            minutesM = timeMain[0];
+            secondsM = timeMain[1];
+            minutesP = timePlay[0];
+            secondsP = timePlay[1];
 
             // UPDATE INFO
             updateButtonLabels();
             updateBenchList();
             updateStats();
+            updateAnlUITable();
             clockPer.innerHTML = struct_time["period"];
             clockMain.innerHTML = struct_time["clock_main"];
             clockPlay.innerHTML = struct_time["clock_play"];
@@ -1219,9 +1266,10 @@ btnSave.onclick = function() {
         "field": struct_field,
         "tbl_cpass": tbl_cpass,
         "tbl_pass": tbl_pass,
+        "tbl_actions": tbl_actions,
         "tbl_opp": tbl_opp,
         "tbl_match": tbl_match,
-        "tbl_zone": tbl_zone
+        "tbl_anl": tbl_anl
     }
     var blob = new Blob([JSON.stringify(struct)], {type: "text/plain;charset=utf-8"});
     var fileName = struct_match["teams"][0] + "_" + struct_match["teams"][1] + "_" + struct_match["date"] + ".txt";
@@ -1340,6 +1388,21 @@ btnExport.onclick = function() {
         }
     }
 
+    // Team Actions Tab
+    var dataTeamActions = [];
+    // Header
+    dataTeamActions.push(Object.keys(tbl_pass));
+    // Data
+    if (tbl_actions["index"].length > 0) {
+        for (var row=0; row<tbl_actions["index"].length; row++) {
+            var datarow = [];
+            for (var col=0; col<Object.keys(tbl_actions).length; col++) {
+                datarow.push(tbl_actions[Object.keys(tbl_actions)[col]][row])
+            }
+            dataTeamActions.push(datarow.slice());
+        }
+    }
+
     // Playing Stats Tab
     var dataPlayEvents = [];
     // Header
@@ -1403,6 +1466,7 @@ btnExport.onclick = function() {
     wb = pushSheet(wb, "Match Events", dataMatchEvents);
     wb = pushSheet(wb, "Opposition Events", dataOppEvents);
     wb = pushSheet(wb, "Team Events", dataTeamEvents);
+    wb = pushSheet(wb, "Team Actions", dataTeamActions);
     wb = pushSheet(wb, "Playing Stats", dataPlayEvents);
     wb = pushSheet(wb, "Pass Matrix", dataPassMatrix);
 
@@ -1464,11 +1528,14 @@ function buttonEnable(button, tgl) {
 }
 function toggleActions(tgl) {
     buttonEnable(btnPINC, tgl);
+    buttonEnable(btnDWON, tgl);
     buttonEnable(btnPLOSS, tgl);
+    buttonEnable(btnBLK, tgl);
+    buttonEnable(btnPGAIN, tgl);
     buttonEnable(btnSEQ, tgl);
-    buttonEnable(btnKIN, tgl);
     buttonEnable(btnSON, tgl);
     buttonEnable(btnSOFF, tgl);
+    buttonEnable(btnSBLK, tgl);
     buttonEnable(btnFK, tgl);
     buttonEnable(btnCK, tgl);
     buttonEnable(btnPK1, tgl);

@@ -271,14 +271,12 @@ input:checked + .slider:before {
 #pnl-actions {
   display: grid;
   grid-template-columns: 2fr 1fr 1fr 1fr 1fr 1fr 1fr;
-  grid-template-rows: 1fr 1fr 1fr 1fr 1fr 1fr;
+  grid-template-rows: 1fr 1fr 1fr 1fr;
   grid-template-areas:
-    "stoppage pass-inc poss-loss seq-brk kick-in undo undo"
-    "stoppage pass-inc poss-loss seq-brk kick-in undo undo"
-    "stoppage pass-inc poss-loss seq-brk kick-in undo undo"
-    "lbl-clock-play shot-on shot-off f-kick c-kick pk1 pk2"
-    "clock-play shot-on shot-off f-kick c-kick pk1 pk2"
-    "clock-play shot-on shot-off f-kick c-kick pk1 pk2";
+    "stoppage pass-inc seq-brk duel-won recovery undo undo"
+    "stoppage pass-inc seq-brk duel-loss blockf undo undo"
+    "lbl-clock-play shot-on shot-off shot-block f-kick c-kick pk1"
+    "clock-play shot-on shot-off shot-block f-kick c-kick pk2";
   grid-area: pnl-actions;
 }
 
@@ -358,17 +356,20 @@ input:checked + .slider:before {
 .button-1.break {
   background-image: linear-gradient(180deg, var(--grey3) 0%, var(--grey2) 100%);
 }
-.button-1.pass {
+.button-1.green {
   background-image: linear-gradient(180deg, var(--green1) 0%, var(--green2) 100%);
 }
 .button-1.shot {
   background-image: linear-gradient(180deg, var(--blue1) 0%, var(--blue2) 100%);
 }
-.button-1.shot-on {
+.button-1.pass {
   background-image: linear-gradient(180deg, var(--purple1) 0%, var(--purple2) 100%);
 }
 .button-1.shot-off {
   background-image: linear-gradient(180deg, var(--red1) 0%, var(--red2) 100%);
+}
+.button-1.def {
+  background-image: linear-gradient(180deg, var(--yellow1) 0%, var(--yellow2) 100%);
 }
 .button-1.undo {
   background-image: linear-gradient(180deg, var(--red1) 0%, var(--red2) 100%);
@@ -377,7 +378,7 @@ input:checked + .slider:before {
   background-image: linear-gradient(180deg, var(--yellow1) 0%, var(--yellow2) 100%);
 }
 .button-1.pause.toggle {
-  background-image: linear-gradient(0deg, var(--yellow1) 0%, var(--orange) 100%);
+  background-image: linear-gradient(180deg, var(--red2) 0%, var(--red1) 100%);
   border-style: solid;
   border-color: var(--orange);
   border-width: 0.25vh;
@@ -387,7 +388,7 @@ input:checked + .slider:before {
   background-image: linear-gradient(180deg, var(--yellow1) 0%, var(--yellow2) 100%);
 }
 .button-1.stop.toggle {
-  background-image: linear-gradient(0deg, var(--yellow1) 0%, var(--orange) 100%);
+  background-image: linear-gradient(180deg, var(--red2) 0%, var(--red1) 100%);
   border-style: solid;
   border-color: var(--orange);
   border-width: 0.25vh;
@@ -573,15 +574,21 @@ input:checked + .slider:before {
 
 #pass-inc { grid-area: pass-inc; }
 
-#poss-loss { grid-area: poss-loss; }
+#duel-won { grid-area: duel-won; }
+
+#duel-loss { grid-area: duel-loss; }
+
+#recovery { grid-area: recovery; }
+
+#block { grid-area: blockf; }
 
 #seq-brk { grid-area: seq-brk; }
-
-#kick-in { grid-area: kick-in; }
 
 #shot-on { grid-area: shot-on; }
 
 #shot-off { grid-area: shot-off; }
+
+#shot-block { grid-area: shot-block; }
 
 #f-kick { grid-area: f-kick; }
 
