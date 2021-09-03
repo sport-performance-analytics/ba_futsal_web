@@ -239,11 +239,12 @@ for (var i = 0; i<struct_general["nplay"]; i++) {
     tbl_match["last_name2"].push("");
 }
 var tbl_anl = {
+    "Rotations": [],
+    "Rotation Play Time (s)": [],
+    "Rotation Rest Time (s)": [],
     "Play Time (s)": [],
     "Rest Time (s)": [],
     "W/R Ratio": [],
-    "Rotation Time (s)": [],
-    "Rotations": [],
     "Pass %": [],
     "Shot %": [],
     "Duels Won": [],
@@ -251,9 +252,10 @@ var tbl_anl = {
 }
 for (var i = 0; i<struct_general["nplay"]+struct_general["nsub"]; i++) {
     tbl_anl["Rotations"].push(0);
+    tbl_anl["Rotation Play Time (s)"].push(0);
+    tbl_anl["Rotation Rest Time (s)"].push(0);
     tbl_anl["Play Time (s)"].push(0);
     tbl_anl["Rest Time (s)"].push(0);
-    tbl_anl["Rotation Time (s)"].push(0);
     tbl_anl["W/R Ratio"].push(0);
     tbl_anl["Pass %"].push(0);
     tbl_anl["Shot %"].push(0);
@@ -450,9 +452,10 @@ function startPlay() {
     for (i=0; i<struct_team.players.length; i++) {
         if (struct_team.players[i].active==1) {
             tbl_anl["Play Time (s)"][i]++;
-            tbl_anl["Rotation Time (s)"][i]++;
+            tbl_anl["Rotation Play Time (s)"][i]++;
         } else {
             tbl_anl["Rest Time (s)"][i]++;
+            tbl_anl["Rotation Rest Time (s)"][i]++;
         }
         tbl_anl["W/R Ratio"][i] = Math.round(100*tbl_anl["Play Time (s)"][i] / (tbl_anl["Rest Time (s)"][i]+1))/100;
     }
@@ -642,7 +645,8 @@ listBench.onchange = function(){
         struct_team["players"][onID]["active"] = 1;
         struct_field["players"][selIdx] = struct_team["players"][onID];
         tbl_anl.Rotations[onID] += 1;
-        tbl_anl["Rotation Time (s)"][offID] = 0;
+        tbl_anl["Rotation Play Time (s)"][offID] = 0;
+        tbl_anl["Rotation Rest Time (s)"][onID] = 0;
 
         // Update Match Table
         updateTime();
@@ -708,16 +712,16 @@ function updateAnlUITable() {
     for (var r=0; r<rows; r++) {
         table += "<tr>";
         if (r==0) {
-            table += "<th style='background-color:black'>Team</th>";
+            table += "<th style='background-color:black; text-align: right'>Team &nbsp &nbsp</th>";
         } else {
-            table += "<th style='background-color:black'>" + metrics[r-1] +"</th>";
+            table += "<th style='background-color:black; text-align: right'>" + metrics[r-1] +" &nbsp &nbsp</th>";
         }
         // Row Colors
-        if (r==1) {
+        if (r==2 || r==4) {
             rCol = [104,108,115,79,191,111]
-        } else if (r==2) {
+        } else if (r==3 || r==5) {
             rCol = [104,108,115,240,65,80]
-        } else if (r==3) {
+        } else if (r==6) {
             rCol = [216,110,11,79,191,111]
         } else {
             rCol = [104,108,115,59,111,209]
@@ -726,11 +730,11 @@ function updateAnlUITable() {
             // Data Format
             if (r>0) {
                 var cellData = tbl_anl[metrics[r-1]][c];
-                if (r==1 || r==2 || r==4) {
+                if (r==2 || r==3 || r==4 || r==5) {
                     cellData = setClock(cellData);
                 }
                 // Cell Color
-                if (r==3) {
+                if (r==6) {
                     cCol = getCellColorWR(tbl_anl[metrics[r-1]], c, rCol)
                 } else {
                     cCol = getCellColor(tbl_anl[metrics[r-1]], c, rCol)
