@@ -820,9 +820,10 @@ function addPassCur(pID) {
     }
 }
 function addAction(lbl) {
-    pID = tbl_cpass["player_no"][tbl_cpass["player_no"].length-1]
+    console.log(struct_field)
+    pID = tbl_cpass.player_id[tbl_cpass.player_id.length-1]
     updateTime();
-    var player = struct_field["players"][pID-1]
+    var player = struct_team.players[pID-1]
     var timeMain = parseClock(struct_time["clock_main"],0);
     var timePlay = parseClock(struct_time["clock_play"],1);
     tbl_actions["index"].push(tbl_pass["index"].length + tbl_cpass["index"].length + 1);
