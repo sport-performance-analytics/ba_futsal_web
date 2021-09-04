@@ -856,7 +856,9 @@ function remPassCur() {
     }
 }
 function finalizeSeq(lbl) {
-    buttonEnable(clockStop, true);
+    if (struct_time.pausetgl==0) {
+        buttonEnable(clockStop, true);
+    }
     // Own Goal Case
     if (lbl=="goal for" && tbl_cpass["index"].length==0) {
         updateTime();
@@ -943,7 +945,7 @@ function updatePlayerTable() {
         } else {
             if (tbl_cpass.result[i]=="pass incomplete") {
                 tbl_player.pass_incomplete[pid]++;
-            } else if (tbl_cpass.result[i]=="shot on") {
+            } else if (tbl_cpass.result[i]=="shot on" || tbl_cpass.result[i]=="goal for") {
                 tbl_player.shot_on[pid]++;
             } else if (tbl_cpass.result[i]=="shot off") {
                 tbl_player.shot_off[pid]++;
@@ -973,7 +975,7 @@ btnSEQ.onclick = function() {finalizeSeq("sequence break");toggleActions(false);
 btnSON.onclick = function() {finalizeSeq("shot on");toggleActions(false);togglePassActor()}
 btnSOFF.onclick = function() {finalizeSeq("shot off");toggleActions(false);togglePassActor()}
 btnSBLK.onclick = function() {finalizeSeq("shot block");toggleActions(false);togglePassActor()}
-btnCK.onclick = function() {finalizeSeq("corner kick");toggleActions(false);togglePassActor()}
+btnCK.onclick = function() {addAction("corner kick")}
 btnFK.onclick = function() {finalizeSeq("free kick");toggleActions(false);togglePassActor()}
 btnPK1.onclick = function() {finalizeSeq("penalty 1");toggleActions(false);togglePassActor()}
 btnPK2.onclick = function() {finalizeSeq("penalty 2");toggleActions(false);togglePassActor()}
